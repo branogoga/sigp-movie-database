@@ -4,6 +4,8 @@ import * as ReactDOM from "react-dom";
 import produce, {Draft} from "../node_modules/immer/dist/immer";
 import {FormattedMessage} from "../node_modules/react-intl/dist/index";
 
+import Button from "../node_modules/react-bootstrap/Button";
+
 export interface ILikeButtonProps {
     caption: string;
     finalText: string;
@@ -24,12 +26,12 @@ export class LikeButton extends React.Component<ILikeButtonProps, ILikeButtonSta
       return <FormattedMessage id={this.props.finalText}/>;
     }
 
-    return <button
-            className="btn btn-primary"
+    return <Button
+            variant="primary"
             onClick={this.onClick.bind(this)}
         >
             <FormattedMessage id={this.props.caption}/>
-        </button>;
+        </Button>;
   }
 
   private onClick() {
