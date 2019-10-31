@@ -6,6 +6,8 @@ import {
     Link,
     Route,
     Switch,
+    useParams,
+    useRouteMatch,
 } from "react-router-dom";
 
 import Col from "../node_modules/react-bootstrap/Col";
@@ -59,22 +61,24 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
 
     const movieList = movies.Search.map((movie) => {
         return (
-            <Media key={"movie-" + movie.imdbID}>
-                <img
-                    width={64}
-                    height={64}
-                    className="mr-3"
-                    src={movie.Poster}
-                    alt={movie.Title}
-                />
+            <Link to={"/movie/" + movie.imdbID}>
+                <Media key={"movie-" + movie.imdbID}>
+                    <img
+                        width={64}
+                        height={64}
+                        className="mr-3"
+                        src={movie.Poster}
+                        alt={movie.Title}
+                    />
 
-                <Media.Body>
-                    <h5>{movie.Title}</h5>
-                    <p>
-                        {movie.Year}, {movie.Type}
-                    </p>
-                </Media.Body>
-            </Media>
+                    <Media.Body>
+                        <h5>{movie.Title}</h5>
+                        <p>
+                            {movie.Year}, {movie.Type}
+                        </p>
+                    </Media.Body>
+                </Media>
+            </Link>
         );
     });
 
@@ -96,9 +100,12 @@ interface IMovieDetailsProps {
 }
 
 const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovieDetailsProps) => {
+
+    const { movieId } = useParams();
+
     return (
         <div className="mt-5">
-            <h1>Movie details</h1>
+            <h1>Movie '{movieId}'</h1>
         </div>
     );
 };
@@ -125,6 +132,7 @@ export class Application extends React.Component<IApplicationProps, IApplication
                 <Switch>
                     <Route path="/search"><SearchMovies /></Route>
                     <Route path="/favorite"><FavoriteMovies /></Route>
+                    <Route path="/movie/:movieId"><MovieDetails /></Route>
                     <Route path="/"><SearchMovies /></Route>
                 </Switch>
                 </div>
