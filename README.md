@@ -54,6 +54,8 @@ https://branogoga.github.io/sigp-movie-database/
 
 ## Open in local browser:
 
+https://branogoga.github.io/sigp-movie-database/
+
 ```
 index.html
 ```
