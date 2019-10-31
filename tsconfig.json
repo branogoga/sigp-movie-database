@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "rootDir": ".",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "module": "es6",
+    "target": "es6",
+    "jsx": "react",
+    //"allowJs": false,
+    //"checkJs": false,
+    "esModuleInterop": true,
+    "alwaysStrict": true,
+    "strict": true
+  },
+  "include": [
+    "./src/**/*",
+    "./node_modules/**/*"
+  ],
+  "exclude": [  
+    "dist",
+    "node_modules"
+  ]
+}
