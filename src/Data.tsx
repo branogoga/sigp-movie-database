@@ -97,7 +97,7 @@ export interface IMovieDetailsResponse extends IMovieDetails {
     Response: string;
 }
 
-export function getMovieDetails(id: string) {
+export function getMovieDetails(id: string): IMovieDetails {
     return  {
         Title:"Batman Begins",
         Year:"2005",
@@ -127,6 +127,5 @@ export function getMovieDetails(id: string) {
         BoxOffice:"$204,100,000",
         Production:"Warner Bros. Pictures",
         Website:"N/A",
-        Response:"True",
     };
 }

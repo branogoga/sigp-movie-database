@@ -18,6 +18,9 @@ import Nav from "../node_modules/react-bootstrap/Nav";
 import Navbar from "../node_modules/react-bootstrap/Navbar";
 import Row from "../node_modules/react-bootstrap/Row";
 
+import { IconContext } from "../node_modules/react-icons/lib/esm/index";
+import { FaStar, FaRegStar } from "../node_modules/react-icons/fa/index";
+
 import * as Data from "./Data";
 
 export interface IMenuProps {
@@ -98,14 +101,13 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
     );
 };
 
-interface IMovieDetailsProps {
+interface IMovieDetailsPageProps {
 }
 
-const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovieDetailsProps) => {
-
+const MovieDetailsPage: React.StatelessComponent<IMovieDetailsPageProps> = (props: IMovieDetailsPageProps) => {
     const { movieId } = useParams();
 
-    if(!movieId) {
+    if (!movieId) {
         return (
             <Alert variant="danger">Invalid movie ID.</Alert>
         );
@@ -114,17 +116,71 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
     const movie = Data.getMovieDetails(movieId);
 
     return (
+        <MovieDetails
+            movie={movie}
+            isFavorite={true}
+        />
+    );
+};
+
+interface IRatingProps {
+    isFavorite: boolean;
+    onSetAsFavorite: () => void;
+    onRemoveFromFavorites: () => void;
+}
+
+const Rating: React.StatelessComponent<IRatingProps> = (props: IRatingProps) => {
+
+    const color: string = "yellow";
+    const size: string = "64px";
+
+    if (props.isFavorite) {
+        return (
+            <IconContext.Provider value={{ color, size }}>
+                <FaStar onClick={props.onRemoveFromFavorites} />
+            </IconContext.Provider>
+        );
+    } else {
+        return (
+            <IconContext.Provider value={{ color, size }}>
+                <FaRegStar onClick={props.onSetAsFavorite} />
+            </IconContext.Provider>
+        );
+    }
+};
+
+interface IMovieDetailsProps {
+    movie: Data.IMovieDetails;
+    isFavorite: boolean;
+}
+
+const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovieDetailsProps) => {
+
+    return (
         <Container>
             <Row>
                 <Col>
-                    <h1>{movie.Title}</h1>
-                    <div>Rating: {movie.imdbRating} / 10</div>
-                    <p>{movie.Runtime} | {movie.Genre} | {movie.Released}</p>
+                    <Rating 
+                        isFavorite={false}
+                        onSetAsFavorite={setAsFavorite.bind(null, props.movie.imdbID)}
+                        onRemoveFromFavorites={removeFromFavorites.bind(null, props.movie.imdbID)}
+                        />
+                    <h1>{props.movie.Title}</h1>
+                    <div>Rating: {props.movie.imdbRating} / 10</div>
+                    <p>{props.movie.Runtime} | {props.movie.Genre} | {props.movie.Released}</p>
                 </Col>
             </Row>
         </Container>
     );
 };
+
+function setAsFavorite(movieId: string): void {
+    console.log("Setting movie '" + movieId + "' as favorite.");
+}
+
+function removeFromFavorites(movieId: string): void {
+    console.log("Remove movie '" + movieId + "' from favorite movies.");
+}
 
 export interface IApplicationProps {
     caption: string;
@@ -148,7 +204,7 @@ export class Application extends React.Component<IApplicationProps, IApplication
                     <Switch>
                         <Route path="/search"><SearchMovies /></Route>
                         <Route path="/favorite"><FavoriteMovies /></Route>
-                        <Route path="/movie/:movieId"><MovieDetails /></Route>
+                        <Route path="/movie/:movieId"><MovieDetailsPage /></Route>
                         <Route path="/"><SearchMovies /></Route>
                     </Switch>
                 </div>
