@@ -1,7 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { LikeButton } from "./Component";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 
 import Nav from "../node_modules/react-bootstrap/Nav";
 import Navbar from "../node_modules/react-bootstrap/Navbar";
@@ -12,14 +17,16 @@ export interface IMenuProps {
 const Menu: React.StatelessComponent<IMenuProps> = (props: IMenuProps) => {
     return (
         <Navbar bg="dark" variant="dark" fixed="top" collapseOnSelect expand="lg">
-            <Navbar.Brand href="#home">
-                {"Movie Database"}
+            <Navbar.Brand>
+                <Link to="/">
+                    {"Movie Database"}
+                </Link>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
-                    <Nav.Link href="#search">Search</Nav.Link>
-                    <Nav.Link href="#favorites">Favorites</Nav.Link>
+                    <Nav.Link><Link to="/search">Search</Link></Nav.Link>
+                    <Nav.Link><Link to="/favorite">Favorites</Link></Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
@@ -75,10 +82,16 @@ export class Application extends React.Component<IApplicationProps, IApplication
   public render(): React.ReactNode {
     return (
         <React.Fragment>
-            <Menu />
-            <div className="my-5">
-                <SearchMovies />
-            </div>
+            <Router>
+                <Menu />
+                <div className="my-5">
+                <Switch>
+                    <Route path="/search"><SearchMovies /></Route>
+                    <Route path="/favorite"><FavoriteMovies /></Route>
+                    <Route path="/"><SearchMovies /></Route>
+                </Switch>
+                </div>
+            </Router>
         </React.Fragment>
     );
   }
