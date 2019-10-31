@@ -3,13 +3,19 @@ import * as ReactDOM from "react-dom";
 
 import {
     BrowserRouter as Router,
-    Switch,
+    Link,
     Route,
-    Link
-  } from "react-router-dom";
+    Switch,
+} from "react-router-dom";
 
+import Col from "../node_modules/react-bootstrap/Col";
+import Container from "../node_modules/react-bootstrap/Container";
+import Media from "../node_modules/react-bootstrap/Media";
 import Nav from "../node_modules/react-bootstrap/Nav";
 import Navbar from "../node_modules/react-bootstrap/Navbar";
+import Row from "../node_modules/react-bootstrap/Row";
+
+import * as Data from "./Data";
 
 export interface IMenuProps {
 }
@@ -48,9 +54,40 @@ interface ISearchMoviesProps {
 }
 
 const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISearchMoviesProps) => {
+
+    const movies = Data.searchMovies("batman");
+
+    const movieList = movies.Search.map((movie) => {
+        return (
+            <Media key={"movie-" + movie.imdbID}>
+                <img
+                    width={64}
+                    height={64}
+                    className="mr-3"
+                    src={movie.Poster}
+                    alt={movie.Title}
+                />
+
+                <Media.Body>
+                    <h5>{movie.Title}</h5>
+                    <p>
+                        {movie.Year}, {movie.Type}
+                    </p>
+                </Media.Body>
+            </Media>
+        );
+    });
+
     return (
         <div className="mt-5">
-            <h1>Search movies</h1>
+            <Container>
+                <Row>
+                    <Col>
+                        <h1>Search movies</h1>
+                        {movieList}
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 };
