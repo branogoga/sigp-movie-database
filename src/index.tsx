@@ -12,7 +12,7 @@ const messages = {
 };
 const language = "sk";
 
-import * as Component from "./Component";
+import { Application } from "./Application";
 
 window.addEventListener("load", () => {
 
@@ -21,7 +21,7 @@ window.addEventListener("load", () => {
     const container: HTMLElement | null = document.getElementById("react-container");
     ReactDOM.render(
         <I18n.IntlProvider locale={language} messages={messages[language]}>
-            <Component.LikeButton caption={"likebutton.caption"} finalText={"likebutton.final-text"}/>
+            <Application caption={"likebutton.caption"} finalText={"likebutton.final-text"}/>
         </I18n.IntlProvider>,
         container);
 });
