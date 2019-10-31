@@ -10,6 +10,7 @@ import {
     useRouteMatch,
 } from "react-router-dom";
 
+import Alert from "../node_modules/react-bootstrap/Alert";
 import Col from "../node_modules/react-bootstrap/Col";
 import Container from "../node_modules/react-bootstrap/Container";
 import Media from "../node_modules/react-bootstrap/Media";
@@ -46,9 +47,13 @@ interface IFavoriteMoviesProps {
 
 const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: IFavoriteMoviesProps) => {
     return (
-        <div className="mt-5">
-            <h1>Favorite movies</h1>
-        </div>
+        <Container>
+            <Row>
+                <Col>
+                    <h1>Favorite movies</h1>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
@@ -83,16 +88,13 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
     });
 
     return (
-        <div className="mt-5">
-            <Container>
-                <Row>
-                    <Col>
-                        <h1>Search movies</h1>
-                        {movieList}
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+        <Container>
+            <Row>
+                <Col>
+                    {movieList}
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
@@ -103,10 +105,24 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
 
     const { movieId } = useParams();
 
+    if(!movieId) {
+        return (
+            <Alert variant="danger">Invalid movie ID.</Alert>
+        );
+    }
+
+    const movie = Data.getMovieDetails(movieId);
+
     return (
-        <div className="mt-5">
-            <h1>Movie '{movieId}'</h1>
-        </div>
+        <Container>
+            <Row>
+                <Col>
+                    <h1>{movie.Title}</h1>
+                    <div>Rating: {movie.imdbRating} / 10</div>
+                    <p>{movie.Runtime} | {movie.Genre} | {movie.Released}</p>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
@@ -128,13 +144,13 @@ export class Application extends React.Component<IApplicationProps, IApplication
         <React.Fragment>
             <Router>
                 <Menu />
-                <div className="my-5">
-                <Switch>
-                    <Route path="/search"><SearchMovies /></Route>
-                    <Route path="/favorite"><FavoriteMovies /></Route>
-                    <Route path="/movie/:movieId"><MovieDetails /></Route>
-                    <Route path="/"><SearchMovies /></Route>
-                </Switch>
+                <div className="container my-5">                    
+                    <Switch>
+                        <Route path="/search"><SearchMovies /></Route>
+                        <Route path="/favorite"><FavoriteMovies /></Route>
+                        <Route path="/movie/:movieId"><MovieDetails /></Route>
+                        <Route path="/"><SearchMovies /></Route>
+                    </Switch>
                 </div>
             </Router>
         </React.Fragment>
