@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
+import { Store, AnyAction } from "redux";
 
 import {
     BrowserRouter as Router,
@@ -14,6 +15,7 @@ import {
 import Alert from "react-bootstrap/Alert";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import Media from "react-bootstrap/Media";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -48,7 +50,11 @@ const Menu: React.StatelessComponent<IMenuProps> = (props: IMenuProps) => {
     );
 };
 
-interface IFavoriteMoviesProps {
+export interface IStoreProps {
+    store: Store<Types.IMovieDatabaseStore, AnyAction>;
+}
+
+interface IFavoriteMoviesProps extends IStoreProps {
     movies: Types.IMoviePreview[];
 }
 
@@ -71,8 +77,9 @@ const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: I
     );
 };
 
-interface ISearchMoviesProps {
+interface ISearchMoviesProps extends IStoreProps {
     movies: Types.IMoviePreview[];
+    query: string;
 }
 
 const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISearchMoviesProps) => {
@@ -112,6 +119,7 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
         <Container>
             <Row>
                 <Col>
+                    <Form.Control type={"text"} value={props.query} className={"my-5"} />
                     {movieList}
                 </Col>
             </Row>
@@ -119,7 +127,7 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
     );
 };
 
-interface IMovieDetailsPageProps {
+interface IMovieDetailsPageProps extends IStoreProps {
 }
 
 const MovieDetailsPage: React.StatelessComponent<IMovieDetailsPageProps> = (props: IMovieDetailsPageProps) => {
@@ -137,6 +145,7 @@ const MovieDetailsPage: React.StatelessComponent<IMovieDetailsPageProps> = (prop
         <MovieDetails
             movie={movie}
             isFavorite={true}
+            store={props.store}
         />
     );
 };
@@ -167,7 +176,7 @@ const Rating: React.StatelessComponent<IRatingProps> = (props: IRatingProps) => 
     }
 };
 
-interface IMovieDetailsProps {
+interface IMovieDetailsProps extends IStoreProps {
     movie: Types.IMovieDetails;
     isFavorite: boolean;
 }
@@ -180,8 +189,8 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
                 <Col>
                     <Rating
                         isFavorite={false}
-                        onSetAsFavorite={setAsFavorite.bind(null, props.movie)}
-                        onRemoveFromFavorites={removeFromFavorites.bind(null, props.movie.imdbID)}
+                        onSetAsFavorite={setAsFavorite.bind(null, props.movie, props.store)}
+                        onRemoveFromFavorites={removeFromFavorites.bind(null, props.movie.imdbID, props.store)}
                         />
                     <h1>{props.movie.Title}</h1>
                     <div>Rating: {props.movie.imdbRating} / 10</div>
@@ -192,15 +201,25 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
     );
 };
 
-function setAsFavorite(movie: Types.IMoviePreview): void {
+function setAsFavorite(movie: Types.IMoviePreview, store: Store<Types.IMovieDatabaseStore, AnyAction>): void {
     console.log("Setting movie '" + movie.imdbID + "' as favorite.");
+
+    store.dispatch({
+        movie,
+        type: Actions.ADD_MOVIE_TO_FAVORITES,
+    });
 }
 
-function removeFromFavorites(movieId: string): void {
+function removeFromFavorites(movieId: string, store: Store<Types.IMovieDatabaseStore, AnyAction>): void {
     console.log("Remove movie '" + movieId + "' from favorite movies.");
+
+    store.dispatch({
+        movieId,
+        type: Actions.REMOVE_MOVIE_FROM_FAVORITES,
+    });
 }
 
-export interface IApplicationProps {
+export interface IApplicationProps extends IStoreProps {
     favoriteMovies: Types.IFavoriteMoviesStore;
     searchMovies: Types.ISearchMovieStore;
 }
@@ -209,9 +228,17 @@ export interface IApplicationState {
 }
 
 export class Application extends React.Component<IApplicationProps, IApplicationState> {
+
   constructor(props: IApplicationProps) {
     super(props);
     console.log(props);
+  }
+
+  public componentWillMount() {
+      this.props.store.dispatch({
+        query: "componentWillMount",
+        type: Actions.SET_SEARCH_QUERY,
+      });
   }
 
   public render(): React.ReactNode {
@@ -219,13 +246,15 @@ export class Application extends React.Component<IApplicationProps, IApplication
         <React.Fragment>
             <Router>
                 <Menu />
-                <div className="container my-5">
-                    <Switch>
-                        <Route path="/search"><SearchMovies movies={this.props.searchMovies.searchResults} /></Route>
-                        <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} /></Route>
-                        <Route path="/movie/:movieId"><MovieDetailsPage /></Route>
-                        <Route path="/"><SearchMovies movies={this.props.searchMovies.searchResults}/></Route>
-                    </Switch>
+                <div className="mt-5">
+                    <div className="mt-5">
+                        <Switch>
+                            <Route path="/search"><SearchMovies query={this.props.searchMovies.query} movies={this.props.searchMovies.searchResults} store={this.props.store} /></Route>
+                            <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} store={this.props.store} /></Route>
+                            <Route path="/movie/:movieId"><MovieDetailsPage store={this.props.store} /></Route>
+                            <Route path="/"><SearchMovies query={this.props.searchMovies.query} movies={this.props.searchMovies.searchResults} store={this.props.store} /></Route>
+                        </Switch>
+                    </div>
                 </div>
             </Router>
         </React.Fragment>
@@ -233,10 +262,14 @@ export class Application extends React.Component<IApplicationProps, IApplication
   }
 }
 
-function mapStateToProps(state: Types.IMovieDatabaseStore): IApplicationProps {
+function mapStateToProps(
+    state: Types.IMovieDatabaseStore,
+    ownProps: IStoreProps,
+): IApplicationProps {
     return {
         favoriteMovies: state.favoriteMovies,
         searchMovies: state.searchMovie,
+        store: ownProps.store,
     };
 }
 
@@ -247,4 +280,4 @@ const mapDispatchToProps = {
     setSearchResults: Actions.setSearchResults,
 };
 
-export const ConnectedApplication = connect(mapStateToProps, mapDispatchToProps)(Application);
+export const ConnectedApplication = connect(mapStateToProps)(Application);

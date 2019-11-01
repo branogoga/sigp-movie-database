@@ -65,7 +65,7 @@ window.addEventListener("load", () => {
     ReactDOM.render(
         <I18n.IntlProvider locale={language} messages={messages[language]}>
             <Provider store={store}>
-                <ConnectedApplication />
+                <ConnectedApplication store={store} />
             </Provider>
         </I18n.IntlProvider>,
         container);
