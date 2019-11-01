@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
-import { Store, AnyAction } from "redux";
+import { AnyAction, Store } from "redux";
 import { withRouter } from "react-router";
 
 import {
@@ -24,17 +24,12 @@ import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
 import { IconContext } from "react-icons";
-import { FaStar, FaRegStar } from "react-icons/fa";
+import { FaRegStar, FaStar } from "react-icons/fa";
 
 import * as Actions from "./Actions";
-import * as Data from "./Data";
 import * as Types from "./Types/index";
-import { MsHyphenateLimitLinesProperty } from "csstype";
 
-export interface IMenuProps {
-}
-
-const Menu: React.StatelessComponent<IMenuProps> = (props: IMenuProps) => {
+const Menu: React.StatelessComponent = (props) => {
     return (
         <Navbar bg="dark" variant="dark" fixed="top" collapseOnSelect expand="lg">
             <Navbar.Brand>
@@ -166,13 +161,14 @@ function onSearchInputChanged(
     event: any,
     ) {
         store.dispatch({
-            type: Actions.SET_SEARCH_QUERY,
             query: event.currentTarget.value,
+            type: Actions.SET_SEARCH_QUERY,
         });
 }
 
 interface IMovieDetailsPageProps extends IStoreProps {
     movie?: Types.IMovieDetails;
+    favoriteMovies: Types.IMoviePreview[];
     match: any;
     history: any;
     location: any;
@@ -202,10 +198,14 @@ export class MovieDetailsPage extends React.Component<IMovieDetailsPageProps, {}
                 </Spinner>
             );
         } else {
+
+            const movieId = this.props.movie.imdbID;
+            const isFavorite = this.props.favoriteMovies.some( (movie) => movie.imdbID === movieId);
+
             return (
                 <MovieDetails
                     movie={this.props.movie}
-                    isFavorite={true}
+                    isFavorite={isFavorite}
                     store={this.props.store}
                 />
             );
@@ -253,7 +253,7 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
             <Row>
                 <Col>
                     <Rating
-                        isFavorite={false}
+                        isFavorite={props.isFavorite}
                         onSetAsFavorite={setAsFavorite.bind(null, props.movie, props.store)}
                         onRemoveFromFavorites={removeFromFavorites.bind(null, props.movie.imdbID, props.store)}
                         />
@@ -317,11 +317,17 @@ export class Application extends React.Component<IApplicationProps, IApplication
                                 />
                             </Route>
 
-                            <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} store={this.props.store} /></Route>
+                            <Route path="/favorite">
+                                <FavoriteMovies 
+                                    movies={this.props.favoriteMovies}
+                                    store={this.props.store}
+                                />
+                            </Route>
 
                             <Route path="/movie/:movieId">
                                 <MovieDetailsPageWithRouter
                                     movie={this.props.currentMovie.movie}
+                                    favoriteMovies={this.props.favoriteMovies}
                                     store={this.props.store}
                                 />
                             </Route>
