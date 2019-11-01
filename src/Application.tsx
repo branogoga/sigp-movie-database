@@ -27,6 +27,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import * as Actions from "./Actions";
 import * as Data from "./Data";
 import * as Types from "./Types/index";
+import { MsHyphenateLimitLinesProperty } from "csstype";
 
 export interface IMenuProps {
 }
@@ -119,13 +120,28 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
         <Container>
             <Row>
                 <Col>
-                    <Form.Control type={"text"} value={props.query} className={"my-5"} />
+                    <Form.Control
+                        type={"text"}
+                        value={props.query}
+                        className={"my-5"}
+                        onChange={onSearchInputChanged.bind(null, props.store)}
+                        />
                     {movieList}
                 </Col>
             </Row>
         </Container>
     );
 };
+
+function onSearchInputChanged(
+    store: Store<Types.IMovieDatabaseStore, AnyAction>,
+    event: any,
+    ) {
+        store.dispatch({
+            type: Actions.SET_SEARCH_QUERY,
+            query: event.currentTarget.value,
+        });
+}
 
 interface IMovieDetailsPageProps extends IStoreProps {
 }
@@ -232,13 +248,6 @@ export class Application extends React.Component<IApplicationProps, IApplication
   constructor(props: IApplicationProps) {
     super(props);
     console.log(props);
-  }
-
-  public componentWillMount() {
-      this.props.store.dispatch({
-        query: "componentWillMount",
-        type: Actions.SET_SEARCH_QUERY,
-      });
   }
 
   public render(): React.ReactNode {
