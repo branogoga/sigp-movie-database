@@ -53,13 +53,6 @@ window.addEventListener("load", () => {
 
     store.dispatch(setSearchQueryAction);
 
-    const setSearchResultsAction = {
-        movies: Data.searchMovies(query).Search,
-        type: Actions.SET_SEARCH_RESULTS,
-    };
-
-    store.dispatch(setSearchResultsAction);
-
     console.log("Rendering application ...");
     const container: HTMLElement | null = document.getElementById("react-container");
     ReactDOM.render(

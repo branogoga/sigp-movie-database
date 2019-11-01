@@ -87,34 +87,36 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
 
     // const movies = Data.searchMovies("batman");
 
+    let movieList = null;
     if (props.movies.length === 0) {
-        return (
+        movieList = (
             <Alert>The list is empty.</Alert>
         );
+    } else {
+
+        movieList = props.movies.map((movie: Types.IMoviePreview) => {
+            return (
+                <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
+                    <Media>
+                        <img
+                            width={64}
+                            height={64}
+                            className="mr-3"
+                            src={movie.Poster}
+                            alt={movie.Title}
+                        />
+
+                        <Media.Body>
+                            <h5>{movie.Title}</h5>
+                            <p>
+                                {movie.Year}, {movie.Type}
+                            </p>
+                        </Media.Body>
+                    </Media>
+                </Link>
+            );
+        });
     }
-
-    const movieList = props.movies.map((movie: Types.IMoviePreview) => {
-        return (
-            <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
-                <Media>
-                    <img
-                        width={64}
-                        height={64}
-                        className="mr-3"
-                        src={movie.Poster}
-                        alt={movie.Title}
-                    />
-
-                    <Media.Body>
-                        <h5>{movie.Title}</h5>
-                        <p>
-                            {movie.Year}, {movie.Type}
-                        </p>
-                    </Media.Body>
-                </Media>
-            </Link>
-        );
-    });
 
     return (
         <Container>
