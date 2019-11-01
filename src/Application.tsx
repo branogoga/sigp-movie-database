@@ -57,6 +57,43 @@ export interface IStoreProps {
     store: Store<Types.IMovieDatabaseStore, AnyAction>;
 }
 
+export interface IMovieListProps {
+    movies: Types.IMoviePreview[];
+}
+
+const MovieList: React.StatelessComponent<IMovieListProps> = (props: IMovieListProps) => {
+    const listItems = props.movies.map((movie: Types.IMoviePreview) => {
+        return (
+            <React.Fragment>
+                <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
+                    <Media>
+                        <img
+                            width={64}
+                            height={64}
+                            className="mr-3"
+                            src={movie.Poster}
+                            alt={movie.Title}
+                        />
+
+                        <Media.Body>
+                            <h5>{movie.Title}</h5>
+                            <p>
+                                {movie.Year}, {movie.Type}
+                            </p>
+                        </Media.Body>
+                    </Media>
+                </Link>
+            </React.Fragment>
+        );
+    });
+
+    return (
+        <React.Fragment>
+            {listItems}
+        </React.Fragment>
+    );
+};
+
 interface IFavoriteMoviesProps extends IStoreProps {
     movies: Types.IMoviePreview[];
 }
@@ -75,6 +112,7 @@ const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: I
                 <Col>
                     <h1>Favorite movies</h1>
                     <Alert variant="info">You have {props.movies.length} favorite movies.</Alert>
+                    <MovieList movies={props.movies} />
                 </Col>
             </Row>
         </Container>
@@ -96,37 +134,12 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
         );
     } else {
 
-        const movieListItems = props.movies.map((movie: Types.IMoviePreview) => {
-            return (
-                <React.Fragment>
-                    <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
-                        <Media>
-                            <img
-                                width={64}
-                                height={64}
-                                className="mr-3"
-                                src={movie.Poster}
-                                alt={movie.Title}
-                            />
-
-                            <Media.Body>
-                                <h5>{movie.Title}</h5>
-                                <p>
-                                    {movie.Year}, {movie.Type}
-                                </p>
-                            </Media.Body>
-                        </Media>
-                    </Link>
-                </React.Fragment>
-            );
-        });
-
         movieList = (
             <React.Fragment>
                 <Alert variant="info">
                     Found '{props.totalNumberOfResults}' movies matching search phrase '{props.query}'.
                 </Alert>
-                {movieListItems}
+                <MovieList movies={props.movies} />
             </React.Fragment>
         );
     }
