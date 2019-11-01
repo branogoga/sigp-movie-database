@@ -21,7 +21,7 @@ import { currentMovieReducer } from "./Reducers/CurrentMovieReducer";
 import { favoriteMoviesReducer } from "./Reducers/FavoriteMoviesReducer";
 import { searchMovieReducer } from "./Reducers/SearchMovieReducer";
 
-import { ConnectedApplication } from "./Application";
+import Application from "./Application";
 
 import CurrentMovieSaga from "./Sagas/CurrentMovieSaga";
 import SearchQuerySaga from "./Sagas/SearchQuerySaga";
@@ -30,10 +30,9 @@ import * as Types from "./Types/index";
 
 window.addEventListener("load", () => {
 
-    console.log("All assets are loaded");
-
-    console.log("Creating Redux Store ...");
-
+    //
+    // Initialize the Store and Sagas
+    //
     const initialState: Types.IMovieDatabaseStore = {
         currentMovie: {
             movie: undefined,
@@ -64,6 +63,9 @@ window.addEventListener("load", () => {
     sagaMiddleware.run(SearchQuerySaga);
     sagaMiddleware.run(CurrentMovieSaga);
 
+    //
+    // Set initial query to 'batman'
+    //
     const query = "batman";
 
     const setSearchQueryAction = {
@@ -73,12 +75,14 @@ window.addEventListener("load", () => {
 
     store.dispatch(setSearchQueryAction);
 
-    console.log("Rendering application ...");
+    //
+    // Render the application
+    //
     const container: HTMLElement | null = document.getElementById("react-container");
     ReactDOM.render(
         <I18n.IntlProvider locale={language} messages={messages[language]}>
             <Provider store={store}>
-                <ConnectedApplication store={store} />
+                <Application store={store} />
             </Provider>
         </I18n.IntlProvider>,
         container);
