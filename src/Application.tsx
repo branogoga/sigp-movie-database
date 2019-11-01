@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { AnyAction, Store } from "redux";
 import { withRouter } from "react-router";
@@ -17,77 +16,19 @@ import Alert from "react-bootstrap/Alert";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import Media from "react-bootstrap/Media";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
-
-import { IconContext } from "react-icons";
-import { FaRegStar, FaStar } from "react-icons/fa";
 
 import * as Actions from "./Actions";
 import * as Types from "./Types";
 
-const Menu: React.StatelessComponent = (props) => {
-    return (
-        <Navbar bg="dark" variant="dark" fixed="top" collapseOnSelect expand="lg">
-            <Navbar.Brand>
-                <Link to="/">
-                    {"Movie Database"}
-                </Link>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="mr-auto">
-                    <Nav.Link><Link to="/search">Search</Link></Nav.Link>
-                    <Nav.Link><Link to="/favorite">Favorites</Link></Nav.Link>
-                </Nav>
-            </Navbar.Collapse>
-        </Navbar>
-    );
-};
+import { Menu } from "./Components/Menu";
+import { MovieList } from "./Components/MovieList";
+import { Rating } from "./Components/Rating";
 
 export interface IStoreProps {
     store: Store<Types.IMovieDatabaseStore, AnyAction>;
 }
-
-export interface IMovieListProps {
-    movies: Types.IMoviePreview[];
-}
-
-const MovieList: React.StatelessComponent<IMovieListProps> = (props: IMovieListProps) => {
-    const listItems = props.movies.map((movie: Types.IMoviePreview) => {
-        return (
-            <React.Fragment>
-                <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
-                    <Media>
-                        <img
-                            width={64}
-                            height={64}
-                            className="mr-3"
-                            src={movie.Poster}
-                            alt={movie.Title}
-                        />
-
-                        <Media.Body>
-                            <h5>{movie.Title}</h5>
-                            <p>
-                                {movie.Year}, {movie.Type}
-                            </p>
-                        </Media.Body>
-                    </Media>
-                </Link>
-            </React.Fragment>
-        );
-    });
-
-    return (
-        <React.Fragment>
-            {listItems}
-        </React.Fragment>
-    );
-};
 
 interface IFavoriteMoviesProps extends IStoreProps {
     movies: Types.IMoviePreview[];
@@ -214,32 +155,6 @@ export class MovieDetailsPage extends React.Component<IMovieDetailsPageProps, {}
 };
 
 const MovieDetailsPageWithRouter = withRouter(MovieDetailsPage);
-
-interface IRatingProps {
-    isFavorite: boolean;
-    onSetAsFavorite: () => void;
-    onRemoveFromFavorites: () => void;
-}
-
-const Rating: React.StatelessComponent<IRatingProps> = (props: IRatingProps) => {
-
-    const color: string = "yellow";
-    const size: string = "64px";
-
-    if (props.isFavorite) {
-        return (
-            <IconContext.Provider value={{ color, size }}>
-                <FaStar onClick={props.onRemoveFromFavorites} />
-            </IconContext.Provider>
-        );
-    } else {
-        return (
-            <IconContext.Provider value={{ color, size }}>
-                <FaRegStar onClick={props.onSetAsFavorite} />
-            </IconContext.Provider>
-        );
-    }
-};
 
 interface IMovieDetailsProps extends IStoreProps {
     movie: Types.IMovieDetails;
