@@ -19,6 +19,7 @@ import * as Actions from "./Actions";
 import { ConnectedApplication } from "./Application";
 import * as Data from "./Data";
 import SearchQuerySaga from "./Sagas/SearchQuerySaga";
+import CurrentMovieSaga from "./Sagas/CurrentMovieSaga";
 import * as Types from "./Types/index";
 
 window.addEventListener("load", () => {
@@ -55,6 +56,7 @@ window.addEventListener("load", () => {
     );
 
     sagaMiddleware.run(SearchQuerySaga);
+    sagaMiddleware.run(CurrentMovieSaga);
 
     const query = "batman";
 
