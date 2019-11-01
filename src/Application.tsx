@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { connect } from "react-redux";
 
 import {
     BrowserRouter as Router,
@@ -21,6 +22,7 @@ import Row from "react-bootstrap/Row";
 import { IconContext } from "react-icons";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
+import * as Actions from "./Actions";
 import * as Data from "./Data";
 import * as Types from "./Types/index";
 
@@ -47,9 +49,17 @@ const Menu: React.StatelessComponent<IMenuProps> = (props: IMenuProps) => {
 };
 
 interface IFavoriteMoviesProps {
+    movies: Types.IMoviePreview[];
 }
 
 const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: IFavoriteMoviesProps) => {
+
+    if (props.movies.length === 0) {
+        return (
+            <Alert>The list is empty.</Alert>
+        );
+    }
+
     return (
         <Container>
             <Row>
@@ -62,13 +72,20 @@ const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: I
 };
 
 interface ISearchMoviesProps {
+    movies: Types.IMoviePreview[];
 }
 
 const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISearchMoviesProps) => {
 
-    const movies = Data.searchMovies("batman");
+    // const movies = Data.searchMovies("batman");
 
-    const movieList = movies.Search.map((movie: Types.IMoviePreview) => {
+    if (props.movies.length === 0) {
+        return (
+            <Alert>The list is empty.</Alert>
+        );
+    }
+
+    const movieList = props.movies.map((movie: Types.IMoviePreview) => {
         return (
             <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
                 <Media>
@@ -161,9 +178,9 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
         <Container>
             <Row>
                 <Col>
-                    <Rating 
+                    <Rating
                         isFavorite={false}
-                        onSetAsFavorite={setAsFavorite.bind(null, props.movie.imdbID)}
+                        onSetAsFavorite={setAsFavorite.bind(null, props.movie)}
                         onRemoveFromFavorites={removeFromFavorites.bind(null, props.movie.imdbID)}
                         />
                     <h1>{props.movie.Title}</h1>
@@ -175,8 +192,8 @@ const MovieDetails: React.StatelessComponent<IMovieDetailsProps> = (props: IMovi
     );
 };
 
-function setAsFavorite(movieId: string): void {
-    console.log("Setting movie '" + movieId + "' as favorite.");
+function setAsFavorite(movie: Types.IMoviePreview): void {
+    console.log("Setting movie '" + movie.imdbID + "' as favorite.");
 }
 
 function removeFromFavorites(movieId: string): void {
@@ -184,8 +201,8 @@ function removeFromFavorites(movieId: string): void {
 }
 
 export interface IApplicationProps {
-    caption: string;
-    finalText: string;
+    favoriteMovies: Types.IFavoriteMoviesStore;
+    searchMovies: Types.ISearchMovieStore;
 }
 
 export interface IApplicationState {
@@ -194,6 +211,7 @@ export interface IApplicationState {
 export class Application extends React.Component<IApplicationProps, IApplicationState> {
   constructor(props: IApplicationProps) {
     super(props);
+    console.log(props);
   }
 
   public render(): React.ReactNode {
@@ -201,12 +219,12 @@ export class Application extends React.Component<IApplicationProps, IApplication
         <React.Fragment>
             <Router>
                 <Menu />
-                <div className="container my-5">                    
+                <div className="container my-5">
                     <Switch>
-                        <Route path="/search"><SearchMovies /></Route>
-                        <Route path="/favorite"><FavoriteMovies /></Route>
+                        <Route path="/search"><SearchMovies movies={this.props.searchMovies.searchResults} /></Route>
+                        <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} /></Route>
                         <Route path="/movie/:movieId"><MovieDetailsPage /></Route>
-                        <Route path="/"><SearchMovies /></Route>
+                        <Route path="/"><SearchMovies movies={this.props.searchMovies.searchResults}/></Route>
                     </Switch>
                 </div>
             </Router>
@@ -214,3 +232,19 @@ export class Application extends React.Component<IApplicationProps, IApplication
     );
   }
 }
+
+function mapStateToProps(state: Types.IMovieDatabaseStore): IApplicationProps {
+    return {
+        favoriteMovies: state.favoriteMovies,
+        searchMovies: state.searchMovie,
+    };
+}
+
+const mapDispatchToProps = {
+    addToFavorites: Actions.addToFavorites,
+    removeFromFavorites: Actions.removeFromFavorites,
+    setSearchQuery: Actions.setSearchQuery,
+    setSearchResults: Actions.setSearchResults,
+};
+
+export const ConnectedApplication = connect(mapStateToProps, mapDispatchToProps)(Application);

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { createStore, combineReducers, Reducer } from "redux";
+import { Provider } from "react-redux";
+import { combineReducers, createStore, Reducer } from "redux";
 
 import * as I18n from "react-intl";
 
@@ -14,7 +15,8 @@ const messages = {
 const language = "sk";
 
 import * as Actions from "./Actions";
-import { Application } from "./Application";
+import { ConnectedApplication } from "./Application";
+import * as Data from "./Data";
 import * as Types from "./Types/index";
 
 window.addEventListener("load", () => {
@@ -42,11 +44,29 @@ window.addEventListener("load", () => {
         initialState,
     );
 
+    const query = "batman";
+
+    const setSearchQueryAction = {
+        query,
+        type: Actions.SET_SEARCH_QUERY,
+    };
+
+    store.dispatch(setSearchQueryAction);
+
+    const setSearchResultsAction = {
+        movies: Data.searchMovies(query).Search,
+        type: Actions.SET_SEARCH_RESULTS,
+    };
+
+    store.dispatch(setSearchResultsAction);
+
     console.log("Rendering application ...");
     const container: HTMLElement | null = document.getElementById("react-container");
     ReactDOM.render(
         <I18n.IntlProvider locale={language} messages={messages[language]}>
-            <Application caption={"likebutton.caption"} finalText={"likebutton.final-text"}/>
+            <Provider store={store}>
+                <ConnectedApplication />
+            </Provider>
         </I18n.IntlProvider>,
         container);
 });
