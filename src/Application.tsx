@@ -10,18 +10,19 @@ import {
     useRouteMatch,
 } from "react-router-dom";
 
-import Alert from "../node_modules/react-bootstrap/Alert";
-import Col from "../node_modules/react-bootstrap/Col";
-import Container from "../node_modules/react-bootstrap/Container";
-import Media from "../node_modules/react-bootstrap/Media";
-import Nav from "../node_modules/react-bootstrap/Nav";
-import Navbar from "../node_modules/react-bootstrap/Navbar";
-import Row from "../node_modules/react-bootstrap/Row";
+import Alert from "react-bootstrap/Alert";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Media from "react-bootstrap/Media";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import Row from "react-bootstrap/Row";
 
-import { IconContext } from "../node_modules/react-icons/lib/esm/index";
-import { FaStar, FaRegStar } from "../node_modules/react-icons/fa/index";
+import { IconContext } from "react-icons";
+import { FaStar, FaRegStar } from "react-icons/fa";
 
 import * as Data from "./Data";
+import * as Types from "./Types/index";
 
 export interface IMenuProps {
 }
@@ -67,10 +68,10 @@ const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISear
 
     const movies = Data.searchMovies("batman");
 
-    const movieList = movies.Search.map((movie) => {
+    const movieList = movies.Search.map((movie: Types.IMoviePreview) => {
         return (
-            <Link to={"/movie/" + movie.imdbID}>
-                <Media key={"movie-" + movie.imdbID}>
+            <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
+                <Media>
                     <img
                         width={64}
                         height={64}
@@ -150,7 +151,7 @@ const Rating: React.StatelessComponent<IRatingProps> = (props: IRatingProps) => 
 };
 
 interface IMovieDetailsProps {
-    movie: Data.IMovieDetails;
+    movie: Types.IMovieDetails;
     isFavorite: boolean;
 }
 

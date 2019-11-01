@@ -4,7 +4,8 @@
     "rootDir": ".",
     "noImplicitAny": true,
     "sourceMap": true,
-    "module": "es6",
+    //"module": "es6",
+    "module": "commonjs",
     "target": "es6",
     "jsx": "react",
     //"allowJs": false,
@@ -15,7 +16,7 @@
   },
   "include": [
     "./src/**/*",
-    "./node_modules/**/*"
+    //"./node_modules/**/*"
   ],
   "exclude": [  
     "dist",

@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import produce, {Draft} from "../node_modules/immer/dist/immer";
-import {FormattedMessage} from "../node_modules/react-intl/dist/index";
+import produce, {Draft} from "immer";
+import {FormattedMessage} from "react-intl";
 
-import Button from "../node_modules/react-bootstrap/Button";
+import Button from "react-bootstrap/Button";
 
 export interface ILikeButtonProps {
     caption: string;

@@ -1,13 +1,7 @@
-export interface IMoviePreview {
-    Title: string;
-    Year: string;
-    imdbID: string;
-    Type: string;
-    Poster: string;
-}
+import * as Types from "./Types/index";
 
 export interface ISearchMoviesResponse {
-    Search: IMoviePreview[];
+    Search: Types.IMoviePreview[];
     totalResults: string;
     Response: string;
 }
@@ -61,43 +55,11 @@ export function searchMovies(query: string): ISearchMoviesResponse {
     };
 }
 
-export interface IMovieRating {
-    Source: string;
-    Value: string;
-}
-
-export interface IMovieDetails {
-    Title: string;
-    Year: string;
-    Rated: string;
-    Released: string;
-    Runtime: string;
-    Genre: string;
-    Director: string;
-    Writer: string;
-    Actors: string;
-    Plot: string;
-    Language: string;
-    Country: string;
-    Awards: string;
-    Poster: string;
-    Ratings: IMovieRating[];
-    Metascore: string;
-    imdbRating: string;
-    imdbVotes: string;
-    imdbID: string;
-    Type: string;
-    DVD: string;
-    BoxOffice: string;
-    Production: string;
-    Website: string;
-}
-
-export interface IMovieDetailsResponse extends IMovieDetails {
+export interface IMovieDetailsResponse extends Types.IMovieDetails {
     Response: string;
 }
 
-export function getMovieDetails(id: string): IMovieDetails {
+export function getMovieDetails(id: string): Types.IMovieDetails {
     return  {
         Title:"Batman Begins",
         Year:"2005",
