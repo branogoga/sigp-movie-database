@@ -106,9 +106,44 @@ export function favoriteMoviesReducer(state: Types.IFavoriteMoviesStore = initia
 
 export const favoriteMoviesReducerInstance = combineReducers({favoriteMovies: favoriteMoviesReducer});
 
+export const SET_CURRENT_MOVIE = "SET_CURRENT_MOVIE";
+export type SET_CURRENT_MOVIE = typeof SET_CURRENT_MOVIE;
+
+export interface SetCurrentMovie {
+    type: SET_CURRENT_MOVIE;
+    movieId: string;
+}
+
+export function setCurrentMovie(movieId: string): SetCurrentMovie {
+    return {
+        movieId,
+        type: SET_CURRENT_MOVIE,
+    };
+}
+
+const initialCurrentMovieState: Types.ICurrentMovieStore = {
+    movieId: "",
+    movie: undefined,
+};
+
+export function currentMovieReducer(state: Types.ICurrentMovieStore = initialCurrentMovieState, action: ActionType): Types.ICurrentMovieStore {
+    switch (action.type) {
+        case SET_CURRENT_MOVIE:
+            return {
+                ...state,
+                movieId: action.movieId,
+            };
+        default:
+            return state;
+    }
+}
+
+export const currentMovieReducerInstance = combineReducers({currentMovie: currentMovieReducer});
+
 export type ActionType
     = SetSearchQuery
     | SetSearchResults
     | AddToFavorites
     | RemoveFromFavorites
+    | SetCurrentMovie
     ;

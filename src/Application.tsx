@@ -20,6 +20,7 @@ import Media from "react-bootstrap/Media";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
 
 import { IconContext } from "react-icons";
 import { FaStar, FaRegStar } from "react-icons/fa";
@@ -156,26 +157,26 @@ function onSearchInputChanged(
 }
 
 interface IMovieDetailsPageProps extends IStoreProps {
+    movie?: Types.IMovieDetails;
 }
 
 const MovieDetailsPage: React.StatelessComponent<IMovieDetailsPageProps> = (props: IMovieDetailsPageProps) => {
-    const { movieId } = useParams();
 
-    if (!movieId) {
+    if(!props.movie) {
         return (
-            <Alert variant="danger">Invalid movie ID.</Alert>
+            <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+            </Spinner>
+        );
+    } else {
+        return (
+            <MovieDetails
+                movie={props.movie}
+                isFavorite={true}
+                store={props.store}
+            />
         );
     }
-
-    const movie = Data.getMovieDetails(movieId);
-
-    return (
-        <MovieDetails
-            movie={movie}
-            isFavorite={true}
-            store={props.store}
-        />
-    );
 };
 
 interface IRatingProps {
@@ -250,6 +251,7 @@ function removeFromFavorites(movieId: string, store: Store<Types.IMovieDatabaseS
 export interface IApplicationProps extends IStoreProps {
     favoriteMovies: Types.IFavoriteMoviesStore;
     searchMovies: Types.ISearchMovieStore;
+    currentMovie: Types.ICurrentMovieStore;
 }
 
 export interface IApplicationState {
@@ -278,8 +280,16 @@ export class Application extends React.Component<IApplicationProps, IApplication
                                     store={this.props.store}
                                 />
                             </Route>
+
                             <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} store={this.props.store} /></Route>
-                            <Route path="/movie/:movieId"><MovieDetailsPage store={this.props.store} /></Route>
+
+                            <Route path="/movie/:movieId">
+                                <MovieDetailsPage
+                                    movie={this.props.currentMovie.movie}
+                                    store={this.props.store}
+                                />
+                            </Route>
+
                             <Route path="/">
                                 <SearchMovies
                                     query={this.props.searchMovies.query}
@@ -288,6 +298,7 @@ export class Application extends React.Component<IApplicationProps, IApplication
                                     store={this.props.store}
                                 />
                             </Route>
+
                         </Switch>
                     </div>
                 </div>
@@ -304,6 +315,7 @@ function mapStateToProps(
     return {
         favoriteMovies: state.favoriteMovies,
         searchMovies: state.searchMovie,
+        currentMovie: state.currentMovie,
         store: ownProps.store,
     };
 }

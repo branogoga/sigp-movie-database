@@ -46,7 +46,13 @@ export interface ISearchMovieStore {
 
 export type IFavoriteMoviesStore = IMoviePreview[];
 
+export interface ICurrentMovieStore {
+    movieId: string;
+    movie?: IMovieDetails;
+}
+
 export interface IMovieDatabaseStore {
     favoriteMovies: IFavoriteMoviesStore;
     searchMovie: ISearchMovieStore;
+    currentMovie: ICurrentMovieStore;
 }

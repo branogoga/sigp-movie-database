@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { combineReducers, createStore, Reducer, applyMiddleware } from "redux";
+import { applyMiddleware, combineReducers, createStore, Reducer } from "redux";
 import createSagaMiddleware from "redux-saga";
 
 import * as I18n from "react-intl";
@@ -18,8 +18,8 @@ const language = "sk";
 import * as Actions from "./Actions";
 import { ConnectedApplication } from "./Application";
 import * as Data from "./Data";
+import SearchQuerySaga from "./Sagas/Sagas";
 import * as Types from "./Types/index";
-import mySaga from "./Sagas";
 
 window.addEventListener("load", () => {
 
@@ -28,16 +28,21 @@ window.addEventListener("load", () => {
     console.log("Creating Redux Store ...");
 
     const initialState: Types.IMovieDatabaseStore = {
+        currentMovie: {
+            movie: undefined,
+            movieId: "",
+        },
         favoriteMovies: [],
         searchMovie: {
             query: "",
-            totalNumberOfResults: 0,
             searchResults: [],
+            totalNumberOfResults: 0,
         },
     };
 
     const reducers: Reducer<Types.IMovieDatabaseStore>
         = combineReducers({
+            currentMovie: Actions.currentMovieReducer,
             favoriteMovies: Actions.favoriteMoviesReducer,
             searchMovie: Actions.searchMovieReducer,
         });
@@ -49,7 +54,7 @@ window.addEventListener("load", () => {
         applyMiddleware(sagaMiddleware),
     );
 
-    sagaMiddleware.run(mySaga);
+    sagaMiddleware.run(SearchQuerySaga);
 
     const query = "batman";
 
