@@ -22,6 +22,7 @@ Requirements:
 - Use react-router for page navigation
 - Use redux for data management
 - Use redux-saga for dealing with side effects
+
 Nice to have:
 - Use create-react-app as your starting boilerplate
 - Submit your code via Github/Bitbucket/Gitlab
