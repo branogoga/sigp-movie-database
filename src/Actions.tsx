@@ -96,7 +96,7 @@ export function favoriteMoviesReducer(state: Types.IFavoriteMoviesStore = initia
         case ADD_MOVIE_TO_FAVORITES:
                 return state.concat([action.movie]);
         case REMOVE_MOVIE_FROM_FAVORITES:
-                return state.filter( movie => movie.imdbID === action.movieId);
+                return state.filter( movie => movie.imdbID !== action.movieId);
         default:
             return state;
     }
