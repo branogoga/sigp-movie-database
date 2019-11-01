@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { combineReducers, createStore, Reducer } from "redux";
+import { combineReducers, createStore, Reducer, applyMiddleware } from "redux";
+import createSagaMiddleware from "redux-saga";
 
 import * as I18n from "react-intl";
 
@@ -18,6 +19,7 @@ import * as Actions from "./Actions";
 import { ConnectedApplication } from "./Application";
 import * as Data from "./Data";
 import * as Types from "./Types/index";
+import mySaga from "./Sagas";
 
 window.addEventListener("load", () => {
 
@@ -39,10 +41,14 @@ window.addEventListener("load", () => {
             searchMovie: Actions.searchMovieReducer,
         });
 
+    const sagaMiddleware = createSagaMiddleware();
+
     const store = createStore(
         reducers,
-        initialState,
+        applyMiddleware(sagaMiddleware),
     );
+
+    sagaMiddleware.run(mySaga);
 
     const query = "batman";
 
