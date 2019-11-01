@@ -15,6 +15,7 @@ http://omdbapi.com/?apikey=[YOUR-API-KEY]&i=tt0372784
 3. My favourite movies:
 Page should contain list of favourite movies. User should be able to navigate to movie
 detail and remove movie from favourites.
+
 Requirements:
 - Use OMDb API to fetch all necessary data. No backend required!
 - Use up to date features of Ecmascript or Typescript
