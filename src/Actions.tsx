@@ -94,11 +94,9 @@ const initialFavoriteMoviesState: Types.IFavoriteMoviesStore = [];
 export function favoriteMoviesReducer(state: Types.IFavoriteMoviesStore = initialFavoriteMoviesState, action: ActionType): Types.IFavoriteMoviesStore {
     switch (action.type) {
         case ADD_MOVIE_TO_FAVORITES:
-            console.error("Not implemented: addToFavoritesReducer");
-            return state;
+                return state.concat([action.movie]);
         case REMOVE_MOVIE_FROM_FAVORITES:
-                console.error("Not implemented: removeFromFavoritesReducer");
-                return state;
+                return state.filter( movie => movie.imdbID === action.movieId);
         default:
             return state;
     }

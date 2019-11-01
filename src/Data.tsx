@@ -10,8 +10,8 @@ export interface ISearchMoviesResponse {
 
 const Key = "f476eb53";
 
-export function searchMovies(query: string): Promise<ISearchMoviesResponse> {
-    return Axios.get("http://omdbapi.com/?apikey=" + Key + "&s=" + query);
+export function searchMovies(query: string, page: number = 1): Promise<ISearchMoviesResponse> {
+    return Axios.get("http://omdbapi.com/?apikey=" + Key + "&s=" + query + "&page=" + page);
 }
 
 export interface IMovieDetailsResponse extends Types.IMovieDetails {

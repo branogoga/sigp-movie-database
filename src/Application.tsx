@@ -65,7 +65,7 @@ const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: I
 
     if (props.movies.length === 0) {
         return (
-            <Alert>The list is empty.</Alert>
+            <Alert variant="info">The list is empty.</Alert>
         );
     }
 
@@ -74,6 +74,7 @@ const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: I
             <Row>
                 <Col>
                     <h1>Favorite movies</h1>
+                    <Alert variant="info">You have {props.movies.length} favorite movies.</Alert>
                 </Col>
             </Row>
         </Container>
