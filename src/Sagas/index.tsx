@@ -1,2 +1,2 @@
-import * as SearchQuerySaga from "./Sagas.tsx";
+import * as SearchQuerySaga from "./SearchQuerySaga.tsx";
 export { SearchQuerySaga };

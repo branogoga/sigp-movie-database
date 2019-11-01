@@ -18,7 +18,7 @@ const language = "sk";
 import * as Actions from "./Actions";
 import { ConnectedApplication } from "./Application";
 import * as Data from "./Data";
-import SearchQuerySaga from "./Sagas/Sagas";
+import SearchQuerySaga from "./Sagas/SearchQuerySaga";
 import * as Types from "./Types/index";
 
 window.addEventListener("load", () => {
