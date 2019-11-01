@@ -22,17 +22,20 @@ export type SET_SEARCH_RESULTS = typeof SET_SEARCH_RESULTS;
 export interface SetSearchResults {
     type: SET_SEARCH_RESULTS;
     movies: Types.IMoviePreview[];
+    totalNumberOfResults: number;
 }
 
-export function setSearchResults(movies: Types.IMoviePreview[]): SetSearchResults {
+export function setSearchResults(movies: Types.IMoviePreview[], totalNumberOfResults: number): SetSearchResults {
     return {
         movies,
+        totalNumberOfResults,
         type: SET_SEARCH_RESULTS,
     };
 }
 
 const initialSearchMovieState: Types.ISearchMovieStore = {
     query: "",
+    totalNumberOfResults: 0,
     searchResults: [],
 };
 
@@ -47,6 +50,7 @@ export function searchMovieReducer(state: Types.ISearchMovieStore = initialSearc
                     return {
                         ...state,
                         searchResults: action.movies,
+                        totalNumberOfResults: action.totalNumberOfResults,
                     };
                 default:
             return state;

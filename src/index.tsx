@@ -31,6 +31,7 @@ window.addEventListener("load", () => {
         favoriteMovies: [],
         searchMovie: {
             query: "",
+            totalNumberOfResults: 0,
             searchResults: [],
         },
     };

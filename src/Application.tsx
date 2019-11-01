@@ -80,42 +80,52 @@ const FavoriteMovies: React.StatelessComponent<IFavoriteMoviesProps> = (props: I
 
 interface ISearchMoviesProps extends IStoreProps {
     movies: Types.IMoviePreview[];
+    totalNumberOfResults: number;
     query: string;
 }
 
 const SearchMovies: React.StatelessComponent<ISearchMoviesProps> = (props: ISearchMoviesProps) => {
 
-    // const movies = Data.searchMovies("batman");
-
     let movieList = null;
-    if (props.movies.length === 0) {
+    if (!props.movies || props.movies.length === 0) {
         movieList = (
-            <Alert>The list is empty.</Alert>
+            <Alert variant="info">No movies match the search phrase '{props.query}'. Try some other phrase.</Alert>
         );
     } else {
 
-        movieList = props.movies.map((movie: Types.IMoviePreview) => {
+        const movieListItems = props.movies.map((movie: Types.IMoviePreview) => {
             return (
-                <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
-                    <Media>
-                        <img
-                            width={64}
-                            height={64}
-                            className="mr-3"
-                            src={movie.Poster}
-                            alt={movie.Title}
-                        />
+                <React.Fragment>
+                    <Link to={"/movie/" + movie.imdbID}  key={"movie-" + movie.imdbID}>
+                        <Media>
+                            <img
+                                width={64}
+                                height={64}
+                                className="mr-3"
+                                src={movie.Poster}
+                                alt={movie.Title}
+                            />
 
-                        <Media.Body>
-                            <h5>{movie.Title}</h5>
-                            <p>
-                                {movie.Year}, {movie.Type}
-                            </p>
-                        </Media.Body>
-                    </Media>
-                </Link>
+                            <Media.Body>
+                                <h5>{movie.Title}</h5>
+                                <p>
+                                    {movie.Year}, {movie.Type}
+                                </p>
+                            </Media.Body>
+                        </Media>
+                    </Link>
+                </React.Fragment>
             );
         });
+
+        movieList = (
+            <React.Fragment>
+                <Alert variant="info">
+                    Found '{props.totalNumberOfResults}' movies matching search phrase '{props.query}'.
+                </Alert>
+                {movieListItems}
+            </React.Fragment>
+        );
     }
 
     return (
@@ -260,10 +270,24 @@ export class Application extends React.Component<IApplicationProps, IApplication
                 <div className="mt-5">
                     <div className="mt-5">
                         <Switch>
-                            <Route path="/search"><SearchMovies query={this.props.searchMovies.query} movies={this.props.searchMovies.searchResults} store={this.props.store} /></Route>
+                            <Route path="/search">
+                                <SearchMovies 
+                                    query={this.props.searchMovies.query}
+                                    movies={this.props.searchMovies.searchResults}
+                                    totalNumberOfResults={this.props.searchMovies.totalNumberOfResults}
+                                    store={this.props.store}
+                                />
+                            </Route>
                             <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} store={this.props.store} /></Route>
                             <Route path="/movie/:movieId"><MovieDetailsPage store={this.props.store} /></Route>
-                            <Route path="/"><SearchMovies query={this.props.searchMovies.query} movies={this.props.searchMovies.searchResults} store={this.props.store} /></Route>
+                            <Route path="/">
+                                <SearchMovies
+                                    query={this.props.searchMovies.query}
+                                    movies={this.props.searchMovies.searchResults}
+                                    totalNumberOfResults={this.props.searchMovies.totalNumberOfResults}
+                                    store={this.props.store}
+                                />
+                            </Route>
                         </Switch>
                     </div>
                 </div>

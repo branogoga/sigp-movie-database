@@ -6,10 +6,15 @@ import * as Data from "./Data";
 function* fetchSearchMovies(action: any) {
    try {
       const searchMovieResponse = yield call(Data.searchMovies, action.query);
-      yield put({type: Actions.SET_SEARCH_RESULTS, movies: searchMovieResponse.Search});
+      yield put({
+          type: Actions.SET_SEARCH_RESULTS,
+          movies: searchMovieResponse.data.Search,
+          totalNumberOfResults: Number(searchMovieResponse.data.totalResults),
+        });
    } catch (e) {
        console.error("Unable to load movies: " + e.message);
-   }
+       yield put({type: Actions.SET_SEARCH_RESULTS, movies: [], totalNumberOfResults: 0});
+    }
 }
 
 /*

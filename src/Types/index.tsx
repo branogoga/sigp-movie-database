@@ -41,6 +41,7 @@ export interface IMovieDetails extends IMoviePreview {
 export interface ISearchMovieStore {
     query: string;
     searchResults: IMoviePreview[];
+    totalNumberOfResults: number;
 }
 
 export type IFavoriteMoviesStore = IMoviePreview[];
