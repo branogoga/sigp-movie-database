@@ -16,10 +16,16 @@ const messages = {
 const language = "sk";
 
 import * as Actions from "./Actions";
+
+import { currentMovieReducer } from "./Reducers/CurrentMovieReducer";
+import { favoriteMoviesReducer } from "./Reducers/FavoriteMoviesReducer";
+import { searchMovieReducer } from "./Reducers/SearchMovieReducer";
+
 import { ConnectedApplication } from "./Application";
-import * as Data from "./Data";
-import SearchQuerySaga from "./Sagas/SearchQuerySaga";
+
 import CurrentMovieSaga from "./Sagas/CurrentMovieSaga";
+import SearchQuerySaga from "./Sagas/SearchQuerySaga";
+
 import * as Types from "./Types/index";
 
 window.addEventListener("load", () => {
@@ -43,9 +49,9 @@ window.addEventListener("load", () => {
 
     const reducers: Reducer<Types.IMovieDatabaseStore>
         = combineReducers({
-            currentMovie: Actions.currentMovieReducer,
-            favoriteMovies: Actions.favoriteMoviesReducer,
-            searchMovie: Actions.searchMovieReducer,
+            currentMovie: currentMovieReducer,
+            favoriteMovies: favoriteMoviesReducer,
+            searchMovie: searchMovieReducer,
         });
 
     const sagaMiddleware = createSagaMiddleware();

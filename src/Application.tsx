@@ -27,7 +27,7 @@ import { IconContext } from "react-icons";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 import * as Actions from "./Actions";
-import * as Types from "./Types/index";
+import * as Types from "./Types";
 
 const Menu: React.StatelessComponent = (props) => {
     return (
@@ -355,18 +355,18 @@ function mapStateToProps(
     ownProps: IStoreProps,
 ): IApplicationProps {
     return {
+        currentMovie: state.currentMovie,
         favoriteMovies: state.favoriteMovies,
         searchMovies: state.searchMovie,
-        currentMovie: state.currentMovie,
         store: ownProps.store,
     };
 }
 
-const mapDispatchToProps = {
-    addToFavorites: Actions.addToFavorites,
-    removeFromFavorites: Actions.removeFromFavorites,
-    setSearchQuery: Actions.setSearchQuery,
-    setSearchResults: Actions.setSearchResults,
-};
+// const mapDispatchToProps = {
+//     addToFavorites: Actions.addToFavorites,
+//     removeFromFavorites: Actions.removeFromFavorites,
+//     setSearchQuery: Actions.setSearchQuery,
+//     setSearchResults: Actions.setSearchResults,
+// };
 
 export const ConnectedApplication = connect(mapStateToProps)(Application);
