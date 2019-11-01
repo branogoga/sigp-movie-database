@@ -2,17 +2,17 @@ import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import * as Actions from "../Actions";
 import * as Data from "../Data";
 
-// worker Saga: will be fired on SET_CURRENT_MOVIE actions
+// worker Saga: will be fired on SET_CURRENT_MOVIE_ID actions
 function* fetchCurrentMovie(action: any) {
    try {
         const currentMovieResponse = yield call(Data.getMovieDetails, action.movieId);
         yield put({
             movie: currentMovieResponse.data,
-            type: Actions.SET_CURRENT_MOVIE,
+            type: Actions.SET_CURRENT_MOVIE_DETAILS,
         });
    } catch (e) {
        console.error("Unable to load movies: " + e.message);
-       yield put({type: Actions.SET_CURRENT_MOVIE, movie: undefined });
+       yield put({type: Actions.SET_CURRENT_MOVIE_DETAILS, movie: undefined });
     }
 }
 
@@ -24,7 +24,7 @@ function* fetchCurrentMovie(action: any) {
   and only the latest one will be run.
 */
 function* CurrentMovieSaga() {
-  yield takeLatest(Actions.SET_CURRENT_MOVIE, fetchCurrentMovie);
+  yield takeLatest(Actions.SET_CURRENT_MOVIE_ID, fetchCurrentMovie);
 }
 
 export default CurrentMovieSaga;

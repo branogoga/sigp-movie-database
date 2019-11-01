@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { Store, AnyAction } from "redux";
+import { withRouter } from "react-router";
 
 import {
     BrowserRouter as Router,
@@ -158,26 +159,47 @@ function onSearchInputChanged(
 
 interface IMovieDetailsPageProps extends IStoreProps {
     movie?: Types.IMovieDetails;
+    match: any;
+    history: any;
+    location: any;
 }
 
-const MovieDetailsPage: React.StatelessComponent<IMovieDetailsPageProps> = (props: IMovieDetailsPageProps) => {
+export class MovieDetailsPage extends React.Component<IMovieDetailsPageProps, {}> {
 
-    if(!props.movie) {
-        return (
-            <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-            </Spinner>
-        );
-    } else {
-        return (
-            <MovieDetails
-                movie={props.movie}
-                isFavorite={true}
-                store={props.store}
-            />
-        );
+    public componentDidMount() {
+
+        const movieId = this.props.match.params.movieId;
+
+        if (this.props.movie && this.props.movie.imdbID === movieId) {
+            return;
+        }
+
+        this.props.store.dispatch({
+            movieId: this.props.match.params.movieId,
+            type: Actions.SET_CURRENT_MOVIE_ID,
+        });
+    }
+
+    public render() {
+        if (!this.props.movie) {
+            return (
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>
+            );
+        } else {
+            return (
+                <MovieDetails
+                    movie={this.props.movie}
+                    isFavorite={true}
+                    store={this.props.store}
+                />
+            );
+        }
     }
 };
+
+const MovieDetailsPageWithRouter = withRouter(MovieDetailsPage);
 
 interface IRatingProps {
     isFavorite: boolean;
@@ -284,7 +306,7 @@ export class Application extends React.Component<IApplicationProps, IApplication
                             <Route path="/favorite"><FavoriteMovies movies={this.props.favoriteMovies} store={this.props.store} /></Route>
 
                             <Route path="/movie/:movieId">
-                                <MovieDetailsPage
+                                <MovieDetailsPageWithRouter
                                     movie={this.props.currentMovie.movie}
                                     store={this.props.store}
                                 />

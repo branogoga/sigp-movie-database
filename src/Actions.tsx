@@ -106,18 +106,33 @@ export function favoriteMoviesReducer(state: Types.IFavoriteMoviesStore = initia
 
 export const favoriteMoviesReducerInstance = combineReducers({favoriteMovies: favoriteMoviesReducer});
 
-export const SET_CURRENT_MOVIE = "SET_CURRENT_MOVIE";
-export type SET_CURRENT_MOVIE = typeof SET_CURRENT_MOVIE;
+export const SET_CURRENT_MOVIE_ID = "SET_CURRENT_MOVIE_ID";
+export type SET_CURRENT_MOVIE_ID = typeof SET_CURRENT_MOVIE_ID;
 
-export interface SetCurrentMovie {
-    type: SET_CURRENT_MOVIE;
+export interface SetCurrentMovieId {
+    type: SET_CURRENT_MOVIE_ID;
     movieId: string;
 }
 
-export function setCurrentMovie(movieId: string): SetCurrentMovie {
+export function setCurrentMovieId(movieId: string): SetCurrentMovieId {
     return {
         movieId,
-        type: SET_CURRENT_MOVIE,
+        type: SET_CURRENT_MOVIE_ID,
+    };
+}
+
+export const SET_CURRENT_MOVIE_DETAILS = "SET_CURRENT_MOVIE_DETAILS";
+export type SET_CURRENT_MOVIE_DETAILS = typeof SET_CURRENT_MOVIE_DETAILS;
+
+export interface SetCurrentMovieDetails {
+    type: SET_CURRENT_MOVIE_DETAILS;
+    movie: Types.IMovieDetails;
+}
+
+export function setCurrentMovieDetails(movie: Types.IMovieDetails): SetCurrentMovieDetails {
+    return {
+        movie,
+        type: SET_CURRENT_MOVIE_DETAILS,
     };
 }
 
@@ -128,11 +143,17 @@ const initialCurrentMovieState: Types.ICurrentMovieStore = {
 
 export function currentMovieReducer(state: Types.ICurrentMovieStore = initialCurrentMovieState, action: ActionType): Types.ICurrentMovieStore {
     switch (action.type) {
-        case SET_CURRENT_MOVIE:
+        case SET_CURRENT_MOVIE_ID:
             return {
                 ...state,
+                movie: undefined,
                 movieId: action.movieId,
             };
+        case SET_CURRENT_MOVIE_DETAILS:
+                return {
+                    ...state,
+                    movie: action.movie,
+                };
         default:
             return state;
     }
@@ -145,5 +166,6 @@ export type ActionType
     | SetSearchResults
     | AddToFavorites
     | RemoveFromFavorites
-    | SetCurrentMovie
+    | SetCurrentMovieId
+    | SetCurrentMovieDetails
     ;
