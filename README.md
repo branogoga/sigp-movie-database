@@ -56,6 +56,9 @@ https://branogoga.github.io/sigp-movie-database/
 
 ## Open in local browser:
 
+http://sigp.climb.sk/
+
+deploy on GitHub pages does not work:
 https://branogoga.github.io/sigp-movie-database/
 
 ```
